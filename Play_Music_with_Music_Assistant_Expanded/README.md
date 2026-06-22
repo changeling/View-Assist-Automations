@@ -137,21 +137,17 @@ When you add the blueprint and create an automation from it, you'll see a list o
 
 **The command phrasings** — there is one option per command (e.g. *Play Album Command*, *Stop Command*). Each holds the words you can say to trigger that command. You can leave them alone, or edit them to match how you naturally speak. For example, if you'd rather say "kill the music" than "stop the music," you can add that. You don't need to understand the symbols to add a simple alternative — just keep the `{...}` parts (those are the slots where you say an artist, song, room, etc.).
 
-**Join Alias Map** — *(optional)* a short list that tells the blueprint which speaker each room name refers to, so "join the living room" or "move the music to the office" work reliably. You enter it as simple name-and-value pairs, one per line:
+**Join Alias Map** — *(optional)* a list that tells the blueprint which speaker each room name refers to, so "join the living room" or "move the music to the office" work reliably. Click **Add** to create a row, then fill in two boxes:
 
-```
-living room: media_player.ma_living_room
-office: media_player.ma_office
-```
+- **Spoken phrase** — what you say (e.g. `living room`)
+- **Player entity_id** — the Music Assistant player it maps to (e.g. `media_player.ma_living_room`)
 
-The name on the left is what you say; the value on the right is the Music Assistant player. You can point several spoken names at the same speaker (handy because speech recognition isn't always exact). Leave it empty and the blueprint will try to match by the speaker's own name instead — it just works better when you fill this in.
+Add as many rows as you like, and you can point several spoken phrases at the same speaker (handy because speech recognition isn't always exact). Leave the list empty and the blueprint will try to match by the speaker's own name instead — it just works better when you fill this in.
 
-**Announcement Sound Map** — *(optional)* the same idea, but for sound clips. Each line is a spoken name and the web address (URL) of a sound file:
+**Announcement Sound Map** — *(optional)* the same idea, but for sound clips. Click **Add** for each entry and fill in:
 
-```
-doorbell: http://192.168.1.50:8123/local/doorbell.mp3
-dinner: http://192.168.1.50:8123/local/dinner-bell.mp3
-```
+- **Spoken name** — what you say (e.g. `doorbell`)
+- **Sound URL** — the web address of the audio file (e.g. `http://192.168.1.50:8123/local/doorbell.mp3`)
 
 With those set, "play the doorbell announcement" plays that clip. Leave it empty if you only want spoken announcements.
 

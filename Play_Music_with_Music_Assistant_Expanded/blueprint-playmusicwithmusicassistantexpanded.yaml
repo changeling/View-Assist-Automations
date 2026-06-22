@@ -1,7 +1,7 @@
 # =============================================================================
 # View Assist - Play Music with Music Assistant (Expanded)
-# Version: 0.1.0
-# Date:    2026-06-14
+# Version: 0.2.0
+# Date:    2026-06-22
 # Based on: dinki's "Play Music with Music Assistant" v1.2.7
 # Changelog: see CHANGELOG.md
 # Status: beta (0.x) - commands and behavior may change before 1.0.0
@@ -11,7 +11,7 @@ blueprint:
   description:
     Voice control for Music Assistant from a View Assist satellite - play music,
     control playback, manage the queue, move audio between rooms, make
-    announcements, and more. Expanded edition v0.1.0, based on Play Music with
+    announcements, and more. Expanded edition v0.2.0, based on Play Music with
     Music Assistant v1.2.7. See CHANGELOG.md for the full list of changes.
   domain: automation
   input:
@@ -133,12 +133,26 @@ blueprint:
     announcement_url_map:
       name: Announcement Sound Map
       description:
-        Optional map of spoken names to announcement sound URLs, used by the
-        Announce Sound command. Each key is a spoken name and each value a URL
-        to an audio file. Leave empty if you only use spoken announcements.
-      default: {}
+        Optional list mapping spoken names to announcement sound URLs, used by
+        the Announce Sound command. Add one entry per spoken name; each needs a
+        URL to an audio file. Names match case-insensitively. Leave empty if you
+        only use spoken announcements.
+      default: []
       selector:
         object:
+          label_field: alias
+          multiple: true
+          fields:
+            alias:
+              label: Spoken name
+              required: true
+              selector:
+                text:
+            url:
+              label: Sound URL
+              required: true
+              selector:
+                text:
     # <<<<< NEW CODE END (Tier 2 announcement inputs) <<<<<
     # >>>>> NEW CODE BEGIN (Tier 2 get_library + queue lookahead inputs) >>>>>
     play_random_command:
@@ -216,14 +230,28 @@ blueprint:
     join_alias_map:
       name: Join Alias Map
       description:
-        Optional map of spoken phrases to Music Assistant player entity_ids,
-        used to resolve the named Join command reliably. Each key is a spoken
-        phrase and each value an MA player entity_id. Keys match
-        case-insensitively; anything not in the map falls back to friendly-name
-        matching. Leave empty to rely on friendly names only.
-      default: "{}"
+        Optional list mapping spoken room phrases to Music Assistant player
+        entity_ids, used to resolve the named Join and Transfer commands
+        reliably. Add one entry per spoken phrase; multiple aliases may point
+        to the same player. Aliases match case-insensitively; anything not
+        listed falls back to friendly-name matching. Leave empty to rely on
+        friendly names only.
+      default: []
       selector:
         object:
+          label_field: alias
+          multiple: true
+          fields:
+            alias:
+              label: Spoken phrase
+              required: true
+              selector:
+                text:
+            player:
+              label: Player entity_id
+              required: true
+              selector:
+                text:
     # <<<<< NEW CODE END (Tier 3 inputs) <<<<<
 alias: View Assist - Play Music with Music Assistant Expanded
 description: Play music using music assistant
@@ -1295,10 +1323,10 @@ actions:
                 {{ ns.leader }}
               ma_target: >-
                 {% set query = (trigger.slots.target | default('')) | lower | trim %}
-                {% set amap = join_alias_map | default({}, true) %}
                 {% set ns = namespace(match='') %}
-                {% for k, v in amap.items() %}
-                  {% if ns.match == '' and (k | string | lower | trim) == query %}{% set ns.match = v %}{% endif %}
+                {% for item in join_alias_map if item is mapping %}
+                  {% set item_alias = item.alias | default('') | string | lower | trim %}
+                  {% if ns.match == '' and query != '' and item_alias == query %}{% set ns.match = item.player | default('') | string | trim %}{% endif %}
                 {% endfor %}
                 {% if ns.match == '' %}
                   {% for e in integration_entities('music_assistant') if e.startswith('media_player.') %}
@@ -1532,10 +1560,10 @@ actions:
           - variables:
               announce_url: >-
                 {% set query = (trigger.slots.name | default('')) | lower | trim %}
-                {% set amap = announcement_url_map | default({}, true) %}
                 {% set ns = namespace(url='') %}
-                {% for k, v in amap.items() %}
-                  {% if ns.url == '' and (k | string | lower | trim) == query %}{% set ns.url = v %}{% endif %}
+                {% for item in announcement_url_map if item is mapping %}
+                  {% set item_alias = item.alias | default('') | string | lower | trim %}
+                  {% if ns.url == '' and query != '' and item_alias == query %}{% set ns.url = item.url | default('') | string | trim %}{% endif %}
                 {% endfor %}
                 {{ ns.url }}
           - alias: Play the named announcement sound if found in the map
@@ -1901,10 +1929,10 @@ actions:
                 {{ ns.leader }}
               ma_target: >-
                 {% set query = (trigger.slots.target | default('')) | lower | trim %}
-                {% set amap = join_alias_map | default({}, true) %}
                 {% set ns = namespace(match='') %}
-                {% for k, v in amap.items() %}
-                  {% if ns.match == '' and (k | string | lower | trim) == query %}{% set ns.match = v %}{% endif %}
+                {% for item in join_alias_map if item is mapping %}
+                  {% set item_alias = item.alias | default('') | string | lower | trim %}
+                  {% if ns.match == '' and query != '' and item_alias == query %}{% set ns.match = item.player | default('') | string | trim %}{% endif %}
                 {% endfor %}
                 {% if ns.match == '' %}
                   {% for e in integration_entities('music_assistant') if e.startswith('media_player.') %}
