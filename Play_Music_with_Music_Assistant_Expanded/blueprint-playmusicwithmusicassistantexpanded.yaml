@@ -260,12 +260,11 @@ blueprint:
     join_alias_map:
       name: Join Alias Map
       description:
-        Optional list mapping spoken room phrases to Music Assistant player
-        entity_ids, used to resolve the named Join and Transfer commands
-        reliably. Add one entry per spoken phrase; multiple aliases may point
-        to the same player. Aliases match case-insensitively; anything not
-        listed falls back to friendly-name matching. Leave empty to rely on
-        friendly names only.
+        Optional list mapping spoken room phrases to Music Assistant players,
+        used to resolve the named Join and Transfer commands reliably. Add one
+        entry per spoken phrase; multiple aliases may point to the same player.
+        Aliases match case-insensitively; anything not listed falls back to
+        friendly-name matching. Leave empty to rely on friendly names only.
       default: []
       selector:
         object:
@@ -278,10 +277,13 @@ blueprint:
               selector:
                 text:
             player:
-              label: Player entity_id
+              label: Player
               required: true
               selector:
-                text:
+                entity:
+                  filter:
+                    - domain: media_player
+                      integration: music_assistant
     # <<<<< NEW CODE END (Tier 3 inputs) <<<<<
 alias: View Assist - Play Music with Music Assistant Expanded
 description: Play music using music assistant
