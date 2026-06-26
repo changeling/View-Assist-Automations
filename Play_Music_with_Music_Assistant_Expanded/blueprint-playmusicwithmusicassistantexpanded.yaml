@@ -1019,7 +1019,7 @@ actions:
                         then:
                           - variables:
                               conversation_response: >-
-                                {{ translations[language]['responses']['playsong_found'].replace("{artist}", found_track.tracks[0].artists[0].name).replace("{song}", found_track.tracks[0].name) }}
+                                {{ translations[language]['responses']['playsong_queue'].replace("{artist}", found_track.tracks[0].artists[0].name).replace("{song}", found_track.tracks[0].name) }}
                           - set_conversation_response: "{{ conversation_response }}"
                           - action: view_assist.set_state
                             target:
