@@ -1,7 +1,11 @@
-Patch release fixing the spoken confirmation for the **queue** command.
+Maintenance release: one fix and two small improvements. No breaking changes — existing configurations carry over.
+
+### Changed
+- **Join Alias Map** — the player field is now a filtered dropdown of Music Assistant players instead of a free-typed entity_id. Existing entries are unaffected (the stored value is still an entity_id).
+- **Repeat All** — the command now also responds to "repeat the album" / "repeat this album". Repeat-all loops the whole queue, which is the album when one is playing, so album phrasings route to the correct mode.
 
 ### Fixed
-- "Queue {song} by {artist}" now responds with the queue confirmation ("Adding to the queue …") instead of the play confirmation ("Playing …"). The song was always queued correctly — only the spoken and on-screen reply was wrong. This bug was present since v0.1.0.
+- "Queue {song} by {artist}" now responds with the queue confirmation ("Adding to the queue …") instead of the play confirmation ("Playing …"). The song was always queued correctly — only the spoken and on-screen reply was wrong. Present since v0.1.0.
 
 ---
 

@@ -8,7 +8,7 @@ This is an expanded fork of dinki's [*Play Music with Music Assistant*](https://
 
 ---
 
-## [0.2.1] — Unreleased
+## [0.2.1] – 2026-06-26
 
 ### Changed
 - **Join Alias Map** — the player field is now a filtered dropdown of Music Assistant players instead of a free-typed entity_id. Existing entries are unaffected (the stored value is still an entity_id).
